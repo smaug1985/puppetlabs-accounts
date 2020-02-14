@@ -21,7 +21,8 @@
 #
 # @param sshkey_owner
 #   Specifies the owner of the ssh key file.
-#
+# @param sshkey_mode
+#   Specifies the permissions of the ssh key file.
 # @param sshkeys
 #   List of ssh keys to be added for this user in this directory.
 #
@@ -38,6 +39,7 @@ define accounts::key_management(
   Optional[Stdlib::Unixpath]     $sshkey_custom_path = undef,
   Accounts::User::Name           $sshkey_group       = $group,
   Accounts::User::Name           $sshkey_owner       = $user,
+  String                         $sshkey_mode       = '0600',
   Array[String]                  $sshkeys            = [],
   Optional[Stdlib::Unixpath]     $user_home          = undef,
 ) {
@@ -59,7 +61,7 @@ define accounts::key_management(
       ensure => 'file',
       owner  => $sshkey_owner,
       group  => $sshkey_group,
-      mode   => '0600',
+      mode   => $sshkey_mode,
     }
     if $user_home {
       file { $sshkey_dotdir:
